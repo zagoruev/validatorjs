@@ -17,6 +17,16 @@ var Validator = function (input, rules, customMessages) {
 
   this.hasAsync = false;
   this.rules = this._parseRules(rules);
+
+  this.state = {};
+
+  for (const attr in this.rules) {
+    this.state[attr] = {};
+    const rules = this.rules[attr];
+    rules.forEach((value) => {
+      this.state[attr][value.name] = null;
+    });
+  }
 };
 
 Validator.prototype = {
@@ -71,6 +81,8 @@ Validator.prototype = {
         rulePassed = rule.validate(inputValue, ruleOptions.value, attribute);
         if (!rulePassed) {
           this._addFailure(rule);
+        } else {
+          this._addSuccess(rule);
         }
 
         if (this._shouldStopValidating(attribute, rulePassed)) {
@@ -150,7 +162,17 @@ Validator.prototype = {
   _addFailure: function (rule) {
     var msg = this.messages.render(rule);
     this.errors.add(rule.attribute, msg);
+    this.state[rule.attribute][rule.name] = false;
     this.errorCount++;
+  },
+
+  /**
+   * Add success state for given rule
+   *
+   * @param {Rule} rule
+   */
+  _addSuccess: function (rule) {
+    this.state[rule.attribute][rule.name] = true;
   },
 
   /**

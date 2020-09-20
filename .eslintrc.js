@@ -13,6 +13,7 @@ module.exports = {
     indent: ['error', 2],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
+    'no-prototype-builtins': 'off',
     'no-useless-escape': 'off',
     'no-unused-vars': 'off',
     'no-undef': 'off',
